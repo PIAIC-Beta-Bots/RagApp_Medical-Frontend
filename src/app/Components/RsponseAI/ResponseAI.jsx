@@ -69,3 +69,8 @@ export default function AIResponse({ response }) {
     </div>
   );
 }
+
+
+
+
+

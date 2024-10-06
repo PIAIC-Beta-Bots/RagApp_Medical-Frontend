@@ -1,9 +1,7 @@
-// components/QuestionForm.jsx
 import { useState } from 'react';
 
-export default function QuestionForm({ onSubmit }) {
+export default function QuestionForm({ onSubmit, loading }) {
   const [question, setQuestion] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -11,17 +9,13 @@ export default function QuestionForm({ onSubmit }) {
       alert('Please enter a question');
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      onSubmit(question);
-      setLoading(false);
-    }, 1000); // Simulate a loading delay
+    onSubmit(question); // Call the parent submit function
   };
 
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="w-full max-w-lg md:max-w-2xl lg:max-w-4xl  mx-auto p-6 bg-white shadow-2xl rounded-lg border border-gray-200"
+      className="w-full max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto p-6 bg-white shadow-2xl rounded-lg border border-gray-200"
     >
       <h2 className="text-3xl font-semibold text-center mb-6 text-green-700">
         Ask Your Healthcare Question
@@ -35,7 +29,7 @@ export default function QuestionForm({ onSubmit }) {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Type your question here..."
-          className="w-full h-36 p-4 text-lg border-2 border-gray-300 rounded-md focus:outline-none "
+          className="w-full h-36 p-4 text-lg border-2 border-gray-300 rounded-md focus:outline-none"
         />
       </div>
       <button

@@ -1,19 +1,26 @@
-// components/AIResponse.jsx
 import { useEffect, useState } from 'react';
 
 export default function AIResponse({ response }) {
   const [displayedResponse, setDisplayedResponse] = useState('');
   const [typingIndex, setTypingIndex] = useState(0);
 
-  // Simulate live response typing only if there is a response
+  // Reset displayed response when a new response is passed in
   useEffect(() => {
-    if (response?.text && typingIndex < response.text.length) {
-      const typingInterval = setInterval(() => {
-        setDisplayedResponse((prev) => prev + response.text[typingIndex]);
-        setTypingIndex((prevIndex) => prevIndex + 1);
-      }, 50); // Adjust typing speed
+    if (response?.output) {  // Accessing the response.output instead of response.text
+      setDisplayedResponse(''); // Reset displayed text
+      setTypingIndex(0);        // Reset typing index
+    }
+  }, [response]);
 
-      return () => clearInterval(typingInterval); // Clean up interval
+  // Simulate live response typing only if there is a response output
+  useEffect(() => {
+    if (response?.output && typingIndex < response.output.length) {  // Using response.output instead of response.text
+      const typingInterval = setInterval(() => {
+        setDisplayedResponse((prev) => prev + response.output[typingIndex]);
+        setTypingIndex((prevIndex) => prevIndex + 1);
+      }, 10); // Adjust typing speed
+
+      return () => clearInterval(typingInterval); // Clean up interval on unmount or when text is fully typed
     }
   }, [typingIndex, response]);
 
@@ -26,9 +33,10 @@ export default function AIResponse({ response }) {
         <p className="text-gray-500 italic text-lg">Your AI-generated healthcare response will appear here after you ask a question...</p>
       ) : (
         <>
+          {/* Typing effect response */}
           <p className="mb-6 text-lg leading-relaxed">{displayedResponse}</p>
 
-          {/* Display PubMed articles */}
+          {/* Display PubMed articles if they exist */}
           {response.pubmedArticles?.length > 0 && (
             <div className="mt-4">
               <h3 className="text-xl font-bold mb-4 text-green-700">Related PubMed Articles:</h3>
@@ -49,7 +57,7 @@ export default function AIResponse({ response }) {
             </div>
           )}
 
-          {/* Display FDA drug info */}
+          {/* Display FDA drug info if it exists */}
           {response.drugInfo && (
             <div className="mt-8">
               <h3 className="text-xl font-bold mb-4 text-green-700">FDA Drug Information:</h3>
